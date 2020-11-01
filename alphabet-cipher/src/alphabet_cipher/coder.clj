@@ -20,6 +20,12 @@
 (defn index-of [coll item]
   (count (take-while #(not= item %) coll)))
 
+(defn find-keyword-repetition [coll]
+  (def coll-count (count coll))
+  (def coll-slices (map-indexed (fn [index _item] (take index coll)) coll))
+  (def result (first (filter #(= coll (take coll-count (cycle %))) coll-slices)))
+  (or result coll))
+
 (defn encode-char [key-char message-char]
   (let [key-index (index-of alphabet key-char)
         message-index (index-of alphabet message-char)]
@@ -29,6 +35,10 @@
   (let [key-index (index-of alphabet key-char)]
     (nth alphabet (index-of (nth shifted-alphabets key-index) message-char))))
 
+(defn decipher-char [cipher-char message-char]
+  (let [message-index (index-of alphabet message-char)]
+    (nth alphabet (index-of (nth shifted-alphabets message-index) cipher-char))))
+
 (defn encode [keyword message]
   (apply str (map encode-char (cycle keyword) message)))
 
@@ -36,4 +46,4 @@
   (apply str (map decode-char (cycle keyword) message)))
 
 (defn decipher [cipher message]
-  "decypherme")
+  (apply str (find-keyword-repetition (map decipher-char cipher message))))

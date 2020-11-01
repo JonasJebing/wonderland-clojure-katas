@@ -58,12 +58,25 @@
     (is (= \m
            (decode-char \v \h)))))
 
+(deftest test-decipher-char
+  (testing "m encoded as e is deciphered as s"
+    (is (= \s
+           (decipher-char \e \m)))))
+
 (deftest test-decode
   (testing "can decode a message given an encoded message and a secret keyword"
     (is (= "meetmeontuesdayeveningatseven"
            (decode "vigilance" "hmkbxebpxpmyllyrxiiqtoltfgzzv")))
     (is (= "meetmebythetree"
            (decode "scones" "egsgqwtahuiljgs")))))
+
+(deftest test-find-keyword-repetition
+  (testing "can find abc repetition in abcabca"
+    (is (= [\a \b \c]
+           (find-keyword-repetition [\a \b \c \a \b \c \a]))))
+  (testing "can resolve incomplete ab repetition in aba"
+    (is (= [\a \b]
+           (find-keyword-repetition [\a \b \a])))))
 
 (deftest test-decipher
   (testing "can extract the secret keyword given an encrypted message and the original message"
