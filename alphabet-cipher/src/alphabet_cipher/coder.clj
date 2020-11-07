@@ -21,10 +21,11 @@
   (count (take-while #(not= item %) coll)))
 
 (defn find-keyword-repetition [coll]
-  (def coll-count (count coll))
-  (def coll-slices (map-indexed (fn [index _item] (take index coll)) coll))
-  (def result (first (filter #(= coll (take coll-count (cycle %))) coll-slices)))
-  (or result coll))
+  (let [coll-count (count coll)
+        coll-slices (map-indexed (fn [index _item] (take index coll)) coll)
+        result (first (filter #(= coll (take coll-count (cycle %))) coll-slices))]
+    (or result coll))
+  )
 
 (defn encode-char [key-char message-char]
   (let [key-index (index-of alphabet key-char)
