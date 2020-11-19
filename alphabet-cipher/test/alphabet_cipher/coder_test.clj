@@ -70,10 +70,18 @@
     (is (= "meetmebythetree"
            (decode "scones" "egsgqwtahuiljgs")))))
 
+(deftest test-sub-slice
+  (testing "can sub-slice abc"
+    (is (= [[] [\a] [\a \b]]
+           (sub-slice [\a \b \c])))))
+
 (deftest test-find-keyword-repetition
   (testing "can find abc repetition in abcabca"
     (is (= [\a \b \c]
            (find-keyword-repetition [\a \b \c \a \b \c \a]))))
+  (testing "can return the original sequence if no repetition is found"
+    (is (= [\a \b \c]
+           (find-keyword-repetition [\a \b \c]))))
   (testing "can resolve incomplete ab repetition in aba"
     (is (= [\a \b]
            (find-keyword-repetition [\a \b \a])))))

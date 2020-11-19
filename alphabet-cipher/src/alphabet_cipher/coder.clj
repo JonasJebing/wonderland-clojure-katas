@@ -9,8 +9,8 @@
     (map char (range incl-start excl-end))))
 
 (defn shift
-  ([collection] (concat (rest collection) [(first collection)]))
-  ([n collection] (concat (drop n collection) (take n collection))))
+  ([coll] (concat (rest coll) [(first coll)]))
+  ([n coll] (concat (drop n coll) (take n coll))))
 
 (def alphabet (char-range \a \z))
 
@@ -20,12 +20,16 @@
 (defn index-of [coll item]
   (count (take-while #(not= item %) coll)))
 
+(defn sub-slice
+  "Returns a seq of each sub-slice in coll starting with an empty seq.
+  The returned seq does not contain the original sequence."
+  [coll] (map-indexed (fn [index _item] (take index coll)) coll))
+
+(defn repeats? [coll, slice]
+  (= coll (take (count coll) (cycle slice))))
+
 (defn find-keyword-repetition [coll]
-  (let [coll-count (count coll)
-        coll-slices (map-indexed (fn [index _item] (take index coll)) coll)
-        result (first (filter #(= coll (take coll-count (cycle %))) coll-slices))]
-    (or result coll))
-  )
+  (or (first (filter #(repeats? coll %) (sub-slice coll))) coll))
 
 (defn encode-char [key-char message-char]
   (let [key-index (index-of alphabet key-char)
